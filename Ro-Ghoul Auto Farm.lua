@@ -1,1 +1,1 @@
-loadstring(game:HttpGet("https://gist.githubusercontent.com/z4gs/78cfeaac5bf992c74c9b0710748cd779/raw/9d6f311a99c78b004ded881f23c14862247c0732/Ro-Ghoul"))()
+loadstring(game:HttpGet("https://gist.githubusercontent.com/z4gs/f6e8278b573da8e900a3f3f8b71f129d/raw/ad4545110d5ef03e45dced4e9ef619bc13b7e12f/Ro-Ghoul"))()

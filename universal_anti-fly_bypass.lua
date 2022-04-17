@@ -1,5 +1,7 @@
 --[[
     universal anti  fly bypasser
+    this script is a Fly script with protection to all client-side detections
+
     Bypass by: gS
     Fly by: Infinite Yield
     10/01/2022
@@ -41,7 +43,7 @@ local function randomStr()
     return str
 end
 
-oldnamecall = hookmetamethod(game, "__namecall", newcclosure(function(obj, ...)
+oldnamecall = hookmetamethod(game, "__namecall", function(obj, ...)
     local method = getnamecallmethod()
 
     if not checkcaller() then
@@ -79,7 +81,7 @@ oldnamecall = hookmetamethod(game, "__namecall", newcclosure(function(obj, ...)
     end
 
     return oldnamecall(obj, ...)
-end))
+end)
 
 local arraymethods = {
     game.GetChildren,
@@ -91,7 +93,7 @@ local arraymethods = {
 for i,v in pairs(arraymethods) do
     local old
 
-    old = hookfunction(v, newcclosure(function(obj, ...)
+    old = hookfunction(v, function(obj, ...)
         if not checkcaller() and table.find(preventObjs, obj) then
             local content = old(obj, ...)
     
@@ -108,7 +110,7 @@ for i,v in pairs(arraymethods) do
         end
 
         return old(obj, ...)
-    end))
+    end)
 end
 
 local findmethods = {

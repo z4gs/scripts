@@ -1,6 +1,6 @@
 --[[
     universal anti  fly bypasser
-    this script is a Fly script with protection to all client-side detections
+    this script is a Fly script with protection against all client-side detections
 
     Bypass by: gS
     Fly by: Infinite Yield

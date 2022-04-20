@@ -3,6 +3,8 @@
     This script is a Fly with protections against all client-sided detections
     Bypass by: z4gs
     Fly by: Infinite Yield
+
+    feel free to contact me on discord gS#3993 if you find a game that can detect this, so i can patch the detection
 ]]
 
 -- bypass

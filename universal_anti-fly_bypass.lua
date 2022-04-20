@@ -12,7 +12,7 @@ local preventObjs = {}
 
 local oldnamecall
 
--- metamethods to hook
+-- namecalls to hook
 local namecallmethods = {
     "FindFirstChildOfClass",
     "FindFirstChildWhichIsA",
@@ -20,7 +20,7 @@ local namecallmethods = {
     "findFirstChildWhichIsA"
 }
 
--- more metamethods to hook
+-- more namecalls to hook
 local namecallmethods2 = {
     "children",
     "GetChildren",

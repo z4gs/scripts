@@ -1,14 +1,10 @@
 --[[
     universal anti  fly bypasser
-    this script is a Fly script with protection against all client-side detections
-
-    Bypass by: gS
+    Bypass by: z4gs
     Fly by: Infinite Yield
-    10/01/2022
 ]]
 
------------------ BYPASSES ----------------------
-
+-- bypass
 local player = game:GetService("Players").LocalPlayer
 local UIS = game:GetService("UserInputService")
 local protected_objs = {}
@@ -16,6 +12,7 @@ local preventObjs = {}
 
 local oldnamecall
 
+-- metamethods to hook
 local namecallmethods = {
     "FindFirstChildOfClass",
     "FindFirstChildWhichIsA",
@@ -23,6 +20,7 @@ local namecallmethods = {
     "findFirstChildWhichIsA"
 }
 
+-- more metamethods to hook
 local namecallmethods2 = {
     "children",
     "GetChildren",
@@ -35,6 +33,20 @@ local namecallmethods2 = {
     "getConnectedParts"
 }
 
+-- functions to hook
+local findmethods = {
+    [game.FindFirstChildOfClass] = true,
+    [game.findFirstChildWhichIsA] = true
+}
+
+-- more functions to hook
+local arraymethods = {
+    game.GetChildren,
+    game.GetDescendants,
+    Instance.new("Part").GetJoints,
+    Instance.new("Part").GetConnectedParts
+}
+
 local function randomStr()
     local str = ""
     for _ = 1, math.random(8,15) do
@@ -43,7 +55,8 @@ local function randomStr()
     return str
 end
 
-oldnamecall = hookmetamethod(game, "__namecall", function(obj, ...)
+-- metamethods hooking
+oldnamecall = hookmetamethod(game, "__namecall", newcclosure(function(obj, ...)
     local method = getnamecallmethod()
 
     if not checkcaller() then
@@ -60,52 +73,36 @@ oldnamecall = hookmetamethod(game, "__namecall", function(obj, ...)
             gcinfo()
 
             return content
-        elseif table.find(namecallmethods, getnamecallmethod()) and table.find(preventObjs, obj) then
-            local item = oldnamecall(obj, ...)
-            local found = nil
-
-            if table.find(protected_objs, item) then
-                local descendants = type(({...})[2]) == "bool" and ({...})[2] and obj:GetDescendants() or obj:GetChildren()
-
-                for i,v in pairs(descendants) do
-                    if table.find(protected_objs, v) then
-                        descendants[i] = nil
-                    elseif not found and v.ClassName == ({...})[1] then
-                        found = v
-                    end
-                end
-
-                return found
-            end
+        elseif table.find(namecallmethods, getnamecallmethod()) and table.find(preventObjs, obj) and table.find(protected_objs, oldnamecall(obj, ...)) then
+            -- return nil if the object returned from the function is a protected object
+            return nil
         end
     end
 
     return oldnamecall(obj, ...)
-end)
+end))
 
-local arraymethods = {
-    game.GetChildren,
-    game.GetDescendants,
-    Instance.new("Part").GetJoints,
-    Instance.new("Part").GetConnectedParts
-}
-
+-- functions hooking
 for i,v in pairs(arraymethods) do
     local old
 
     old = hookfunction(v, function(obj, ...)
         if not checkcaller() and table.find(preventObjs, obj) then
+            -- get the table with the instances
             local content = old(obj, ...)
     
             for i,v in pairs(protected_objs) do
                 local index = table.find(content, v)
                 if index then
+                    -- remove the protected object from the table
                     content[index] = nil
                 end
             end
     
+            -- update the table's index
             gcinfo()
     
+            -- return the edited table
             return content
         end
 
@@ -113,41 +110,25 @@ for i,v in pairs(arraymethods) do
     end)
 end
 
-local findmethods = {
-    [game.FindFirstChildOfClass] = true,
-    [game.findFirstChildWhichIsA] = true
-}
-
 for i,v in pairs(findmethods) do
     local old
 
     old = hookfunction(i, function(obj, ...)
-        if table.find(preventObjs, obj) and table.find(preventObjs, obj) then
-            local item = old(obj, ...)
-            local found = nil
-
-            if table.find(protected_objs, item) then
-                local descendants = type(({...})[2]) == "bool" and ({...})[2] and obj:GetDescendants() or obj:GetChildren()
-
-                for i,v in pairs(descendants) do
-                    if table.find(protected_objs, v) then
-                        descendants[i] = nil
-                    elseif not found and v.ClassName == ({...})[1] then
-                        found = v
-                    end
-                end
-                return found
-            end
+        if table.find(preventObjs, obj) and table.find(protected_objs, old(obj, ...)) then
+            -- return nil if the object returned from the function is a protected object
+            return nil
         end
 
         return old(obj, ...)
     end)
 end
 
+-- function to safely add the Fly instances 
 local function safeAdd(char)
     local root = char:WaitForChild("HumanoidRootPart", 10)
     local signals = {}
 
+    -- disabling .DescendantAdded and ChildAdded connections and adding them to the table to re-enable later
     for i,v in pairs(getconnections(game.DescendantAdded)) do
         if v.Enabled then
             v:Disable()
@@ -178,11 +159,13 @@ local function safeAdd(char)
     local weld = Instance.new("Weld")
     local part = Instance.new("Part")
 
+    -- inserting all the Fly instances to the protected objs table
     table.insert(protected_objs, BG)
     table.insert(protected_objs, BV)
     table.insert(protected_objs, weld)
     table.insert(protected_objs, part)
 
+    -- random name to instances so the game can't index or :FindFirstChild them
     weld.Name = randomStr()
     part.Name = randomStr()
     BG.Name = randomStr()
@@ -197,17 +180,17 @@ local function safeAdd(char)
 
     part.Parent = workspace
 
+    -- enabling all the connections after parenting the object
     for i,v in pairs(signals) do
         v:Enable()
     end
 
     return BG, BV
 end
------------------------------------------------------
 
 
 
------------------------ FLY ---------------------------------------
+-- FLY (Infinite Yield)
 
 local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
 local lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}

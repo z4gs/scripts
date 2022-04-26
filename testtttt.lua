@@ -1334,6 +1334,7 @@ function library:AddWindow(title, options)
 							["min"] = slider_options.min or 0,
 							["max"] = slider_options.max or 100,
 							["readonly"] = slider_options.readonly or false,
+							["default"] = slider_options.default
 						}
 
 						local slider = Prefabs:FindFirstChild("Slider"):Clone()
@@ -1425,7 +1426,7 @@ function library:AddWindow(title, options)
 								pcall(callback, sel_value)
 							end
 
-							
+							slider_data:Set(slider_options["default"] or slider_options["min"])
 						end
 
 						return slider_data, slider

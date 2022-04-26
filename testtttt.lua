@@ -1425,7 +1425,7 @@ function library:AddWindow(title, options)
 								pcall(callback, sel_value)
 							end
 
-							slider_data:Set(slider_options["min"])
+							
 						end
 
 						return slider_data, slider

@@ -1964,11 +1964,11 @@ function library:AddWindow(title, options)
 								return Source.Text
 							end
 
-                            function console_data:OnChange(callback)
-                                Source.Text:GetPropertyChangedSignal("Text"):Connect(function()
-                                    callback(Source.Text)
-                                end)
-                            end
+							function console_data:OnChange(callback)
+							    Source:GetPropertyChangedSignal("Text"):Connect(function()
+								callback(Source.Text)
+							    end)
+							end
 
 							function console_data:Log(msg)
 								Source.Text = Source.Text .. "[*] " .. tostring(msg) .. "\n"

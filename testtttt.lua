@@ -2,7 +2,7 @@ do
 	local imgui = game:GetService("CoreGui"):FindFirstChild("imgui")
 	if imgui then imgui:Destroy() end
 end
---a
+
 local imgui = Instance.new("ScreenGui")
 local Prefabs = Instance.new("Frame")
 local Label = Instance.new("TextLabel")
@@ -1963,6 +1963,12 @@ function library:AddWindow(title, options)
 							function console_data:Get()
 								return Source.Text
 							end
+
+                            function console_data:OnChange(callback)
+                                Source.Text:GetPropertyChangedSignal("Text"):Connect(function()
+                                    callback(Source.Text)
+                                end)
+                            end
 
 							function console_data:Log(msg)
 								Source.Text = Source.Text .. "[*] " .. tostring(msg) .. "\n"

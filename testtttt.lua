@@ -795,6 +795,9 @@ Windows.BackgroundTransparency = 1
 Windows.Position = UDim2.new(0, 20, 0, 20)
 Windows.Size = UDim2.new(1, 20, 1, -20)
 
+
+
+
 --[[ Script ]]--
 script.Parent = imgui
 
@@ -2097,33 +2100,5 @@ function library:AddWindow(title, options)
 
 	return window_data, Window
 end
-
---- preloadAsync bypass
-local oldnmc
-local contentProvider = game:GetService("ContentProvider")
-
-oldnmc = hookmetamethod(game, "__namecall", function(self, ...)
-    local args = {...}
-    local method = getnamecallmethod()
-
-    if self == contentProvider and (method == "PreloadAsync" or method == "preloadAsync") and table.find(args[1], game.CoreGui) then
-        return {}
-    end
-
-    return oldnmc(self, ...)
-end)
-
-local oldf
-
-oldf = hookfunction(contentProvider.PreloadAsync, function(self, ...)
-    local args = {...}
-
-    if table.find(args[1], game.CoreGui) then
-        return {}
-    end
-
-    return oldf(self, ...)
-end)
----
 
 return library

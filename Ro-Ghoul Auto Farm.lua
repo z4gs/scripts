@@ -205,7 +205,6 @@ btn2 = tab3:AddButton("Start", function()
                 labels("time", "Switching to other trainer...")
                 for i,v in pairs(player.PlayerFolder.Trainers:GetDescendants()) do
                     if table.find(trainers, v.Name) and findobj(v, "Progress") and tonumber(v.Progress.Value) < 100 and tonumber(player.PlayerFolder.Trainers[player.PlayerFolder.Trainers[team.."Trainer"].Value].Progress.Value) == 100 then
-                        print(v.Name)
                         invoke(remotes.Trainers.ChangeTrainer, v.Name)
                         wait(1.5)
                     end
@@ -436,7 +435,6 @@ do
                 for i2,v2 in pairs(getconstants(v)) do
                     if v2 == "KeyEvent" then
                         local keyfound = getconstant(v, i2 + 1)
-                        print(keyfound)
                         if #keyfound >= 100 then
                             key = keyfound
                             break

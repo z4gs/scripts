@@ -424,27 +424,27 @@ coroutine.wrap(function()
     end
 end)()
 
-fireclickdetector(workspace.TrainerModel.ClickIndicator.ClickDetector)
-waitforobj(waitforobj(player.PlayerGui, "TrainersGui"), "TrainersGuiScript")
-
 -- remote Key grabber + grab updated trainers table
 do
+    fireclickdetector(workspace.TrainerModel.ClickIndicator.ClickDetector)
+    waitforobj(waitforobj(player.PlayerGui, "TrainersGui"), "TrainersGuiScript")
+    player.PlayerGui.TrainersGui:Destroy()
+
     repeat 
         for i,v in pairs(getgc(true)) do
             if not key and type(v) == "function" and getinfo(v).source:find(".ClientControl") then
                 for i2,v2 in pairs(getconstants(v)) do
                     if v2 == "KeyEvent" then
                         local keyfound = getconstant(v, i2 + 1)
-                        
+                        print(keyfound)
                         if #keyfound >= 100 then
                             key = keyfound
                             break
                         end
                     end
                 end
-            elseif type(v) == "table" and ((table.find(v, "(S1) Kureo Mado") and team == "CCG") or (table.find(v, "(S1) Ken Kaneki") and team == "Ghoul")) then
+            elseif type(v) == "table" and ((table.find(v, "(S1) Kureo Mado") and team == "CCG") or (table.find(v, "(S1) Ken Kaneki"))) then
                 trainers = v
-                player.PlayerGui.TrainersGui:Destroy()
             end
         end
         wait()

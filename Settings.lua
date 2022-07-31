@@ -7,8 +7,18 @@ function Data.new(name, data)
 		makefolder(name)
 	end
 
+    local savedData = isfile(name.."/settings.json") and Http:JSONDecode(readfile(name.."/Settings.json"))
+    
+    if savedData then
+        for i,v in pairs(data) do
+            if not savedData[i] then
+                savedData[i] = v
+            end
+        end
+    end
+
 	return setmetatable({
-		Data = isfile(name.."/settings.json") and Http:JSONDecode(readfile(name.."/Settings.json")) or data,
+		Data = savedData or data,
 		FolderName = name
 	}, {
 		__index = DataFunctions

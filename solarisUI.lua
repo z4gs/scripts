@@ -1189,7 +1189,6 @@ function SolarisLib:New(Config)
                         TextboxFrame.Box:CaptureFocus()
 					end
 				end)
-				
 
                 TextboxFrame.Box.FocusLost:Connect(function()
                     local txt = TextboxFrame.Box.Text
@@ -1213,6 +1212,11 @@ function SolarisLib:New(Config)
                        TextboxFrame.Box.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
                     end
                 end)
+
+                function Textbox:Set(text)
+                    TextboxFrame.Box.Text = text
+                end
+
                 return Textbox
             end    
             function ItemHold:Bind(text,preset,holdmode,flag,callback)

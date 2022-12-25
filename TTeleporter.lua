@@ -27,7 +27,7 @@ local function TTeleporter(par_speed)
             if (par_part.Position - par_cframe.Position).Magnitude > par_mag_tolerance then
                 par_part.CFrame = val.Value
             else
-                tween:Stop()
+                tween:Cancel()
                 val:Destroy()
                 completed = true
                 par_part.CFrame = par_cframe

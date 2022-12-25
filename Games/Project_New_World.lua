@@ -4,6 +4,7 @@ local TTeleporter = loadstring(game:HttpGet("https://raw.githubusercontent.com/z
 local plr = game:GetService("Players").LocalPlayer
 local plrData = plr.PlayerData
 local serverStorage = game:GetService("ServerStorage")
+local replicatedStorage = game:GetService("ReplicatedStorage")
 local questRemote = plr.PlayerGui.QuestGui.QuestFunction
 local questFolder = plr.Quest
 
@@ -14,6 +15,8 @@ local options = {
     InfDash = false,
     InfGeppo = false,
     TPFruit = false,
+    DistanceFromNpc = -6.5,
+    WeaponSelected = nil,
     QuestSelected = nil,
     QuestLevelSelected = nil,
     QuestOptions = nil,
@@ -46,7 +49,7 @@ do
     old = hookmetamethod(game, "__namecall", function(obj, ...)
         local method = getnamecallmethod()
 
-        if method == "InvokeServer" or method == "invokeServer" then
+        if obj.ClassName == "RemoteFunction" and (method == "InvokeServer" or method == "invokeServer") then
             if options.InfDash and obj.Name == "Dash" then
                 return
             elseif options.InfGeppo and obj.Name == "Geppo" then
@@ -78,8 +81,6 @@ local function setBestQuest()
             end
         end
     end
-
-    print(options.QuestSelected, options.QuestLevelSelected)
 end
 
 local function getNpc()
@@ -108,14 +109,16 @@ local function autoFarm()
 
         if npc then
             while options.Farm and plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("Humanoid") and plr.Character.Humanoid.Health > 0 and npc.Humanoid.Health > 0 do
-                TTeleporter:Teleport(plr.Character.HumanoidRootPart, npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,-6.5,0) , 200)
+                TTeleporter:Teleport(plr.Character.HumanoidRootPart, npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,options.DistanceFromNpc,0) ,200)
                 
-                if plr.Backpack:FindFirstChild("Combat") then
-                    plr.Backpack.Combat.Parent = plr.Character
-                    plr.Character:WaitForChild("Combat")
+                local weapon = plr.Backpack:FindFirstChild(options.WeaponSelected) or plr.Character:FindFirstChild(options.WeaponSelected)
+
+                if weapon.Parent == plr.Backpack then
+                    weapon.Parent = plr.Character
+                    plr.Character:WaitForChild(weapon.Name)
                 end
 
-                plr.Character.Combat.Punch:FireServer(math.random(1,4))
+                weapon:Activate()
                 
                 task.wait()
             end
@@ -133,13 +136,40 @@ local win = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/scri
 
 -- TABS
 local mainTab = win:Tab("Main")
+local farmOptionsTab = win:Tab("Farm Options")
 local miscTab = win:Tab("Misc")
 
 -- SECTIONS
 local mainSection = mainTab:Section("Main")
+local farmOptionsSection = farmOptionsTab:Section("Farm options")
 local miscSection = miscTab:Section("Misc")
 
 local questLevelSelectionDropdown
+local weaponsDropdown
+
+local function setWeapons(backpack)
+    local tbl = {}
+
+    for i,v in pairs(backpack:GetChildren()) do
+        if replicatedStorage.Weapons:FindFirstChild(v.Name) or v.Name == "Combat" then
+            table.insert(tbl, v.Name)
+        end
+    end
+
+    weaponsDropdown:Refresh(tbl, true)
+end
+
+local function detectNewWeapons()
+    plr.Backpack.ChildAdded:Connect(function(obj)
+        wait()
+        setWeapons(plr.Backpack)
+    end)
+    
+    plr.Backpack.ChildRemoved:Connect(function(obj)
+        wait()
+        setWeapons(plr.Backpack)
+    end)    
+end
 
 mainSection:Dropdown("Quest", 
 (function()
@@ -233,4 +263,19 @@ end)
 
 miscSection:Toggle("Geppo no stamina drain", false, "Toggle", function(opt)
     options.InfGeppo = opt
+end)
+
+weaponsDropdown = farmOptionsSection:Dropdown("Weapon", {}, false, nil, function(opt)
+    options.WeaponSelected = opt
+end)
+
+farmOptionsSection:Slider("Distance From NPC", -6.5, -9, options.DistanceFromNpc, 0.5, "Slider", function(opt)
+    options.DistanceFromNpc = opt
+end)
+
+setWeapons(plr.Backpack)
+detectNewWeapons()
+plr.CharacterAdded:Connect(function()
+    plr:WaitForChild("Backpack", 99)
+    detectNewWeapons()
 end)

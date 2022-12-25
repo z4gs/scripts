@@ -978,7 +978,11 @@ function SolarisLib:New(Config)
 
                 Dropdown:Refresh(list,false)
                 Dropdown:Set(def)
-                SolarisLib.Flags[flag] = Dropdown
+
+                if flag then
+                    SolarisLib.Flags[flag] = Dropdown
+                end
+
                 return Dropdown
             end   
             function ItemHold:MultiDropdown(text,list,def,flag,callback)

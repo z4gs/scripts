@@ -3,8 +3,11 @@ local function TTeleporter(par_speed)
     local Speed = par_speed or 100
 
     function TTeleporterFunctions:Teleport(par_part, par_cframe, par_mag_tolerance)
+        par_mag_tolerance = par_mag_tolerance or 20
+        
         if (par_part.Position - par_cframe.Position).Magnitude < par_mag_tolerance then
             par_part.CFrame = par_cframe
+            return
         end
 
         local val = Instance.new("CFrameValue")

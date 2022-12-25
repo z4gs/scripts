@@ -128,6 +128,10 @@ local function autoFarm()
     end
 end
 
+plr.Idled:connect(function()
+    game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+end)
+
 --------------------------------------------------------------- FRONT-END ---------------------------------------------------------------
 local win = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/scripts/master/solarisUI.lua"))():New({
     Name = "Project New World",

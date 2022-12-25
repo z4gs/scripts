@@ -961,9 +961,11 @@ function SolarisLib:New(Config)
                 end)
 
                 function Dropdown:Set(val)
-					Dropdown.Value = val
-                    DropMain.Btn.Title.Text = text .. " - " .. val
-					return callback(Dropdown.Value)
+                    if val then
+                        Dropdown.Value = val
+                        DropMain.Btn.Title.Text = text .. " - " .. val
+                        return callback(Dropdown.Value)
+                    end
 				end
 
                 spawn(function()

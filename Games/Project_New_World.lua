@@ -19,11 +19,12 @@ local questFolder = plr.Quest
 local options = {
     Farm = false,
     BestQuest = false,
+    FarmMode = 2,
     HideName = false,
     InfDash = false,
     InfGeppo = false,
     TPFruit = false,
-    DistanceFromNpc = -6.5,
+    DistanceFromNpc = 6.5,
     WeaponSelected = nil,
     QuestSelected = nil,
     QuestLevelSelected = nil,
@@ -117,7 +118,7 @@ local function autoFarm()
 
         if npc then
             while options.Farm and plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("Humanoid") and plr.Character.Humanoid.Health > 0 and npc.Humanoid.Health > 0 do
-                TTeleporter:Teleport(plr.Character.HumanoidRootPart, npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,options.DistanceFromNpc,0) ,200)
+                TTeleporter:Teleport(plr.Character.HumanoidRootPart, npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad( options.FarmMode == 1 and 90 or -90 ),0,0) + Vector3.new(0, options.FarmMode == 1 and options.DistanceFromNpc * -1 or options.DistanceFromNpc, 0), 200)
                 
                 local weapon = plr.Backpack:FindFirstChild(options.WeaponSelected) or plr.Character:FindFirstChild(options.WeaponSelected)
 
@@ -281,8 +282,16 @@ weaponsDropdown = farmOptionsSection:Dropdown("Weapon", {}, false, nil, function
     options.WeaponSelected = opt
 end)
 
-farmOptionsSection:Slider("Distance From NPC", -6.5, -9, options.DistanceFromNpc, 0.5, "Slider", function(opt)
+farmOptionsSection:Slider("Distance From NPC", 5, 9, options.DistanceFromNpc, 0.5, "Slider", function(opt)
     options.DistanceFromNpc = opt
+end)
+
+farmOptionsSection:Dropdown("Farm mode", {"Above", "Under"}, "Above", nil, function(opt)  
+    if opt == "Under" then
+        options.FarmMode = 1
+    else
+        options.FarmMode = 2
+    end
 end)
 
 setWeapons(plr.Backpack)

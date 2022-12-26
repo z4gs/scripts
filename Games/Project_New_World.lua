@@ -1,3 +1,11 @@
+--[[
+   Made by: gS
+   Features: 
+           - Auto farm, auto quest (manually or get the best quest automatically)
+           - Select weapon
+           - Tp to fruits
+]]
+
 --------------------------------------------------------------- BACK-END ---------------------------------------------------------------
 local TTeleporter = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/scripts/master/TTeleporter.lua"))()(300)
 

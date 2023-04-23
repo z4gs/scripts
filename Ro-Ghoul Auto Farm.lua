@@ -392,9 +392,7 @@ player.PlayerFolder.Stats.Yen.Changed:Connect(function(value)
     end
 end)
 
-player.Idled:Connect(function()
-    game:GetService("VirtualUser"):ClickButton2(Vector2.new())
-end)
+getconnections(player.Idled)[1]:Disable()
 
 get.Players.PlayerAdded:Connect(function(plr)
     if array.kick then

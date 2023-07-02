@@ -1,37 +1,54 @@
-local Data = {}
-local DataFunctions = {}
 local Http = game:GetService("HttpService")
+local Data = {}
 
-function Data.new(name, data)
-	if not isfolder(name) then
-		makefolder(name)
-	end
+function table_merge(...)
+    local tables_to_merge = { ... }
 
-    local savedData = isfile(name.."/settings.json") and Http:JSONDecode(readfile(name.."/Settings.json"))
-    
-    if savedData then
-        for i,v in pairs(data) do
-            if not savedData[i] then
-                savedData[i] = v
+    local result = tables_to_merge[1]
+
+    for i = 2, #tables_to_merge do
+        local from = tables_to_merge[i]
+        
+        for k, v in pairs(from) do
+            if type(k) == "number" then
+                table.insert(result, v)
+            elseif type(k) == "string" then
+                if type(v) == "table" then
+                    result[k] = result[k] or {}
+                    result[k] = table_merge(result[k], v)
+                else
+                    result[k] = v
+                end
             end
         end
     end
 
-	return setmetatable({
-		Data = savedData or data,
-		FolderName = name
-	}, {
-		__index = DataFunctions
-	})
+    return result
 end
 
-function DataFunctions:Set(name, value)
-	self.Data[name] = value
-	writefile(self.FolderName.."/Settings.json", Http:JSONEncode(self.Data))
+local function init(FolderName, Dict)
+    if not isfolder(FolderName) then
+        makeFolder(FolderName)
+    end
+    
+    local savedData = isfile(FolderName.."/data.json") and Http:JSONDecode(readfile(FolderName.."/data.json"))
+    
+    if savedData then
+        Data = table_merge(savedData, Dict)
+    else
+        Data = Dict
+    end
+    
+    return setmetatable({}, {
+        __index = function(self, idx)
+            return Data[idx]
+        end,
+        
+        __newindex = function(self, idx, newv)
+            Data[idx] = newv
+            writefile(FolderName.."/data.json", Http:JSONEncode(Data))
+        end
+    });
 end
 
-function DataFunctions:Get(name)
-	return self.Data[name]
-end
-
-return Data
+return init

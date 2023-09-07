@@ -28,7 +28,7 @@ end
 
 local function init(FolderName, Dict)
     if not isfolder(FolderName) then
-        makeFolder(FolderName)
+        makefolder(FolderName)
     end
     
     local savedData = isfile(FolderName.."/data.json") and Http:JSONDecode(readfile(FolderName.."/data.json"))

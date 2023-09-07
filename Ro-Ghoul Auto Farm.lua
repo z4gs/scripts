@@ -136,31 +136,29 @@ end)
 array.stage = "One"
 
 tab2:AddSwitch("Reputation Farm", function(bool) 
-    myData:Set("ReputationFarm", bool)
-end):Set(myData:Get("ReputationFarm"))
+    myData.ReputationFarm = bool
+end):Set(myData.ReputationFarm)
 
 tab2:AddSwitch("Auto Reputation Cashout", function(bool)
-    myData:Set("ReputationCashout", bool)
-end):Set(myData:Get("ReputationCashout"))
+    myData.ReputationCashout = bool
+end):Set(myData.ReputationCashout)
 
 for i,v in pairs(array.boss) do
     tab2:AddSwitch(i.." Boss Farm ".."(".."lvl "..v.."+)", function(bool)
-        local bosstable = myData:Get("Boss")
-        bosstable[i] = bool
-        myData:Set("Boss", bosstable)
-    end):Set(myData:Get("Boss")[i])
+        myData.Boss[i] = bool
+    end):Set(myData.Boss[i])
 end
 
 tab2:AddSlider("TP Speed", function(x)
-    myData:Set("TeleportSpeed", x)
+    myData.TeleportSpeed = x
 end, {min = 90, max = 250}):Set(45)
 
 tab2:AddSlider("Distance from NPC", function(x)
-    myData:Set("DistanceFromNpc", x * -1)
+    myData.DistanceFromNpc = x * -1
 end, {min = 0, max = 8}):Set(65)
 
 tab2:AddSlider("Distance from Bosses", function(x)
-    myData:Set("DistanceFromBoss", x * -1)
+    myData.DistanceFromBoss = x * -1
 end, {min = 0, max = 15}):Set(55)
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
@@ -232,18 +230,16 @@ local console = tab4:AddConsole({
     ["source"] = "Text",
 })
 
-console:Set(myData:Get("AutoKickWhitelist"))
+console:Set(myData.AutoKickWhitelist)
 
 console:OnChange(function(newtext)
-    myData:Set("AutoKickWhitelist", newtext)
+    myData.AutoKickWhitelist = newtext
 end)
 
 for i,v in pairs(array.skills) do
     tab4:AddSwitch("Auto use "..i.." skill (on bosses)", function(bool)
-        local skillstable = myData:Get("Skills")
-        skillstable[i] = bool
-        myData:Set("Skills", skillstable)
-    end):Set(myData:Get("Skills")[i])
+        myData.Skills[i] = bool
+    end):Set(myData.Skills[i])
 end
 
 do
@@ -272,7 +268,7 @@ local function tp(pos)
 
     local tween = game:GetService("TweenService"):Create(
         val, 
-        TweenInfo.new((player.Character.HumanoidRootPart.Position - pos.p).magnitude / myData:Get("TeleportSpeed"), Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), 
+        TweenInfo.new((player.Character.HumanoidRootPart.Position - pos.p).magnitude / myData.TeleportSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), 
         {Value = pos}
     )
 
@@ -295,7 +291,7 @@ end
 local function getNPC()
     local nearestnpc, nearest = nil, math.huge
 
-    if myData:Get("Boss")["Gyakusatsu"] and tonumber(player.PlayerFolder.Stats.Level.Value) > array.boss["Gyakusatsu"] and findobj(workspace.NPCSpawns["GyakusatsuSpawn"], "Gyakusatsu") then
+    if myData.Boss.Gyakusatsu and tonumber(player.PlayerFolder.Stats.Level.Value) > array.boss["Gyakusatsu"] and findobj(workspace.NPCSpawns["GyakusatsuSpawn"], "Gyakusatsu") then
         local lowesthealth, lowestNpcModel = math.huge, nil
 
         for i,v in pairs(workspace.NPCSpawns["GyakusatsuSpawn"]:GetChildren()) do
@@ -322,7 +318,7 @@ local function getNPC()
                 if magnitude < nearest then
                     nearestnpc, nearest = npc, magnitude
                 end
-            elseif myData:Get("Boss")[npc.Name] and tonumber(player.PlayerFolder.Stats.Level.Value) >= array.boss[npc.Name] then
+            elseif myData.Boss[npc.Name] and tonumber(player.PlayerFolder.Stats.Level.Value) >= array.boss[npc.Name] then
                 return npc
             end
         end
@@ -455,10 +451,10 @@ while true do
                 if not findobj(player.Character, "Kagune") and not findobj(player.Character, "Quinque")  then
                     pressKey(array.stage)
                 end
-                if myData:Get("ReputationFarm") and (not findobj(player.PlayerFolder.CurrentQuest.Complete, "Aogiri Member") or player.PlayerFolder.CurrentQuest.Complete["Aogiri Member"].Value == player.PlayerFolder.CurrentQuest.Complete["Aogiri Member"].Max.Value) then
+                if myData.ReputationFarm and (not findobj(player.PlayerFolder.CurrentQuest.Complete, "Aogiri Member") or player.PlayerFolder.CurrentQuest.Complete["Aogiri Member"].Value == player.PlayerFolder.CurrentQuest.Complete["Aogiri Member"].Max.Value) then
                     getQuest(true)
                     return
-                elseif myData:Get("ReputationCashout") and tick() - oldtick > 7200 then
+                elseif myData.ReputationCashout and tick() - oldtick > 7200 then
                     getQuest()
                 end
 
@@ -480,10 +476,10 @@ while true do
 
                     labels("text", "Moving to: "..npc.Name)
 
-                    if myData:Get("Boss")[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then
-                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData:Get("DistanceFromBoss"),0))
+                    if myData.Boss[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then
+                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData.DistanceFromBoss,0))
                     else
-                        tp(npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData:Get("DistanceFromNpc"))
+                        tp(npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc)
                     end
 
                     labels("text", "Killing: "..npc.Name)
@@ -495,15 +491,15 @@ while true do
                             if not findobj(player.Character, "Kagune") and not findobj(player.Character, "Quinque")  then
                                 pressKey(array.stage)
                             end
-                            if myData:Get("Boss")[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then 
-                                for x,y in pairs(myData:Get("Skills")) do
+                            if myData.Boss[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then 
+                                for x,y in pairs(myData.Skills) do
                                     if player.PlayerFolder.CanAct.Value and y and array.skills[x].Value ~= "DownTime" then
                                         pressKey(x)
                                     end
                                 end
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData:Get("DistanceFromBoss") ,0)
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData.DistanceFromBoss ,0)
                             else
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData:Get("DistanceFromNpc") 
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc 
                             end
                             if player.PlayerFolder.CanAct.Value then
                                 pressKey("Mouse1")

@@ -28,25 +28,25 @@ local myData = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/s
         R = false
     },
     Boss = {
-        ["Gyakusatsu"] = false,
-        ["Eto Yoshimura"] = false,
-        ["Koutarou Amon"] = false,
-        ["Nishiki Nishio"] = false
+        ["Gyakusatsu"] = true,
+        ["Eto Yoshimura"] = true,
+        ["Koutarou Amon"] = true,
+        ["Nishiki Nishio"] = true 
     },
     DistanceFromNpc = 5,
     DistanceFromBoss = 8,
     TeleportSpeed = 150,
-    ReputationFarm = false,
-    ReputationCashout = false,
+    ReputationFarm = true,
+    ReputationCashout = true,
     AutoKickWhitelist = ""
 })
 
 local array = {
     boss = {
-        ["Gyakusatsu"] = 1250,
-        ["Eto Yoshimura"] = 1250,
-        ["Koutarou Amon"] = 750,
-        ["Nishiki Nishio"] = 250
+        ["Gyakusatsu"] = 12,
+        ["Eto Yoshimura"] = 12,
+        ["Koutarou Amon"] = 75,
+        ["Nishiki Nishio"] = 25
     },
 
     npcs = {["Aogiri Members"] = "GhoulSpawns", Investigators = "CCGSpawns", Humans = "HumanSpawns"},
